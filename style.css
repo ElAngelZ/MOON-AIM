@@ -1,15 +1,15 @@
 :root {
-  --bg-deep: #05080f;
-  --bg-panel: #0b111e;
-  --bg-card: #10192b;
-  --bg-card-hover: #16223a;
-  --border: #1e2d4a;
-  --border-bright: #2e4675;
-  --text-main: #e6eefc;
-  --text-muted: #8ea3c7;
-  --text-dim: #5d7399;
-  --nasa-blue: #7668AF; /* Morado principal (sustituye al azul) */
-  --cyan: #A1AF68;       /* Amarillo secundario / complementario */
+  --bg-deep: #07050f;
+  --bg-panel: #110b1e;
+  --bg-card: #17102b;
+  --bg-card-hover: #22163a;
+  --border: #2c1e4a;
+  --border-bright: #482e75;
+  --text-main: #f3eefc;
+  --text-muted: #b08ec7;
+  --text-dim: #795d99;
+  --purple-primary: #8b5cf6; /* Morado principal */
+  --yellow-secondary: #facc15; /* Amarillo secundario */
   --green: #10b981;
   --amber: #f59e0b;
   --red: #ef4444;
@@ -32,7 +32,7 @@ body {
 /* Header Bar */
 header {
   height: 54px;
-  background: linear-gradient(90deg, #070c17 0%, #0d1628 50%, #070c17 100%);
+  background: linear-gradient(90deg, #090614 0%, #140d24 50%, #090614 100%);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -49,14 +49,14 @@ header {
   gap: 12px;
 }
 .nasa-badge {
-  background: var(--nasa-blue);
+  background: var(--purple-primary);
   color: #fff;
   font-weight: 800;
   font-size: 11px;
   letter-spacing: 0.08em;
   padding: 4px 8px;
   border-radius: 4px;
-  box-shadow: 0 0 12px rgba(118, 104, 175, 0.45);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.45);
 }
 .brand h1 {
   font-size: 14px;
@@ -66,7 +66,7 @@ header {
 }
 .brand span.sub {
   font-size: 16px;
-  color: var(--cyan);
+  color: var(--yellow-secondary);
   font-family: var(--font-mono);
   margin-left: 8px;
   opacity: 0.9;
@@ -95,7 +95,7 @@ header {
 .lang-switch-btn {
   display: flex;
   align-items: center;
-  background: #060a12;
+  background: #07050f;
   border: 1px solid var(--border-bright);
   border-radius: 7px;
   padding: 3px;
@@ -113,9 +113,9 @@ header {
   transition: all 0.18s ease;
 }
 .lang-opt.active {
-  background: var(--nasa-blue);
+  background: var(--purple-primary);
   color: #ffffff;
-  box-shadow: 0 0 10px rgba(118, 104, 175, 0.45);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.45);
 }
 
 /* Main Interactive Console Workspace */
@@ -162,7 +162,7 @@ header {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--cyan);
+  color: var(--yellow-secondary);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -172,9 +172,9 @@ header {
   font-size: 10px;
   padding: 2px 6px;
   border-radius: 4px;
-  background: rgba(161, 175, 104, 0.14);
-  color: var(--cyan);
-  border: 1px solid rgba(161, 175, 104, 0.3);
+  background: rgba(250, 204, 21, 0.14);
+  color: var(--yellow-secondary);
+  border: 1px solid rgba(250, 204, 21, 0.3);
 }
 
 .layer-item {
@@ -182,14 +182,14 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 8px 10px;
-  background: #0a101d;
+  background: #0c0817;
   border: 1px solid var(--border);
   border-radius: 8px;
   margin-bottom: 7px;
   transition: border-color 0.2s;
 }
 .layer-item.active-layer {
-  border-color: rgba(161, 175, 104, 0.45);
+  border-color: rgba(250, 204, 21, 0.45);
 }
 .layer-info {
   display: flex;
@@ -224,8 +224,8 @@ header {
   position: absolute;
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #1e293b;
-  border: 1px solid #334155;
+  background-color: #24193b;
+  border: 1px solid #4a3575;
   transition: .25s;
   border-radius: 22px;
 }
@@ -236,13 +236,13 @@ header {
   width: 16px;
   left: 2px;
   bottom: 2px;
-  background-color: #94a3b8;
+  background-color: #b08ec7;
   transition: .25s;
   border-radius: 50%;
 }
 input:checked + .slider-toggle {
-  background-color: var(--nasa-blue);
-  border-color: var(--cyan);
+  background-color: var(--purple-primary);
+  border-color: var(--yellow-secondary);
 }
 input:checked + .slider-toggle:before {
   transform: translateX(20px);
@@ -253,8 +253,8 @@ input:checked + .slider-toggle:before {
   width: 100%;
   padding: 8px 11px;
   border-radius: 8px;
-  border: 1px solid var(--cyan);
-  background: linear-gradient(135deg, rgba(118, 104, 175, 0.28), rgba(161, 175, 104, 0.16));
+  border: 1px solid var(--yellow-secondary);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.28), rgba(250, 204, 21, 0.16));
   color: #ffffff;
   font-size: 11px;
   font-weight: 700;
@@ -266,12 +266,12 @@ input:checked + .slider-toggle:before {
   transition: all 0.18s ease;
 }
 .pure-map-btn:hover {
-  background: linear-gradient(135deg, rgba(118, 104, 175, 0.45), rgba(161, 175, 104, 0.28));
-  box-shadow: 0 0 14px rgba(161, 175, 104, 0.3);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.45), rgba(250, 204, 21, 0.28));
+  box-shadow: 0 0 14px rgba(250, 204, 21, 0.3);
 }
 .pure-map-btn.pure-active {
-  background: linear-gradient(135deg, #71469e, #62388f);
-  border-color: var(--cyan);
+  background: linear-gradient(135deg, #0f766e, #0d9488);
+  border-color: #2dd4bf;
 }
 
 /* Sliders */
@@ -294,8 +294,8 @@ input:checked + .slider-toggle:before {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
-  color: var(--cyan);
-  background: rgba(161, 175, 104, 0.1);
+  color: var(--yellow-secondary);
+  background: rgba(250, 204, 21, 0.1);
   padding: 1px 6px;
   border-radius: 4px;
 }
@@ -303,7 +303,7 @@ input[type="range"] {
   -webkit-appearance: none;
   width: 100%;
   height: 5px;
-  background: #1e293b;
+  background: #24193b;
   border-radius: 4px;
   outline: none;
 }
@@ -313,10 +313,10 @@ input[type="range"]::-webkit-slider-thumb {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--cyan);
+  background: var(--yellow-secondary);
   border: 2px solid #0f172a;
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(161, 175, 104, 0.6);
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.6);
 }
 .param-hint {
   font-size: 9.8px;
@@ -333,20 +333,20 @@ input[type="range"]::-webkit-slider-thumb {
   padding: 8px 10px;
   border-radius: 7px;
   border: 1px solid var(--border-bright);
-  background: #131f36;
+  background: #17112b;
   color: var(--text-main);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s;
 }
-.action-btn:hover { background: #221d38; border-color: var(--cyan); }
+.action-btn:hover { background: #24193b; border-color: var(--yellow-secondary); }
 .action-btn.primary {
-  background: var(--nasa-blue);
-  border-color: #8e80ca;
+  background: var(--purple-primary);
+  border-color: #7c3aed;
   color: #fff;
 }
-.action-btn.primary:hover { background: #635499; }
+.action-btn.primary:hover { background: #7c3aed; }
 
 /* Optimal Zones Chips List */
 .opt-zones-box {
@@ -398,7 +398,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .num-input, .dt-input {
   width: 100%;
-  background: #080d18;
+  background: #090614;
   border: 1px solid var(--border-bright);
   color: var(--text-main);
   font-family: var(--font-mono);
@@ -408,13 +408,13 @@ input[type="range"]::-webkit-slider-thumb {
   outline: none;
 }
 .num-input:focus, .dt-input:focus {
-  border-color: var(--cyan);
-  box-shadow: 0 0 8px rgba(161, 175, 104, 0.25);
+  border-color: var(--yellow-secondary);
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.25);
 }
 .ephem-summary {
   margin-top: 8px;
   padding: 8px 9px;
-  background: #080d18;
+  background: #090614;
   border: 1px solid var(--border);
   border-radius: 7px;
   font-size: 10.8px;
@@ -426,10 +426,10 @@ input[type="range"]::-webkit-slider-thumb {
   justify-content: space-between;
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--cyan);
+  color: var(--yellow-secondary);
   margin-bottom: 5px;
   padding-bottom: 4px;
-  border-bottom: 1px solid #162238;
+  border-bottom: 1px solid #201338;
 }
 .step-btns {
   display: grid;
@@ -438,7 +438,7 @@ input[type="range"]::-webkit-slider-thumb {
   margin-top: 6px;
 }
 .mini-btn {
-  background: #0d1628;
+  background: #110b1e;
   border: 1px solid var(--border);
   color: var(--text-muted);
   font-family: var(--font-mono);
@@ -447,7 +447,7 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 5px;
   cursor: pointer;
 }
-.mini-btn:hover { border-color: var(--cyan); color: #fff; }
+.mini-btn:hover { border-color: var(--yellow-secondary); color: #fff; }
 
 /* Center Map Viewport */
 .map-viewport {
@@ -476,7 +476,7 @@ canvas#lunarCanvas {
 }
 .hud-chip {
   pointer-events: auto;
-  background: rgba(8, 13, 24, 0.86);
+  background: rgba(9, 6, 20, 0.86);
   backdrop-filter: blur(8px);
   border: 1px solid var(--border-bright);
   border-radius: 8px;
@@ -495,7 +495,7 @@ canvas#lunarCanvas {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  background: rgba(8, 13, 24, 0.9);
+  background: rgba(9, 6, 20, 0.9);
   border: 1px solid var(--border-bright);
   border-radius: 9px;
   padding: 6px;
@@ -514,12 +514,12 @@ canvas#lunarCanvas {
   align-items: center;
   justify-content: center;
 }
-.zoom-btn:hover { background: var(--nasa-blue); border-color: var(--cyan); }
+.zoom-btn:hover { background: var(--purple-primary); border-color: var(--yellow-secondary); }
 .zoom-level-tag {
   font-family: var(--font-mono);
   font-size: 10px;
   text-align: center;
-  color: var(--cyan);
+  color: var(--yellow-secondary);
   padding: 2px 0;
 }
 
@@ -527,7 +527,7 @@ canvas#lunarCanvas {
   position: absolute;
   bottom: 16px;
   left: 16px;
-  background: rgba(8, 13, 24, 0.88);
+  background: rgba(9, 6, 20, 0.88);
   backdrop-filter: blur(8px);
   border: 1px solid var(--border-bright);
   border-radius: 8px;
@@ -543,7 +543,7 @@ canvas#lunarCanvas {
 
 /* Right Telemetry Panel */
 .lsi-card {
-  background: linear-gradient(145deg, #151424, #0b0a14);
+  background: linear-gradient(145deg, #18102d, #0d081a);
   border: 1px solid var(--border-bright);
   border-radius: 10px;
   padding: 13px;
@@ -568,7 +568,7 @@ canvas#lunarCanvas {
 .lsi-plain-desc {
   margin-top: 9px;
   padding: 8px 10px;
-  background: rgba(6, 10, 18, 0.78);
+  background: rgba(7, 5, 15, 0.78);
   border-left: 3px solid var(--green);
   border-radius: 6px;
   font-size: 11px;
@@ -583,7 +583,7 @@ canvas#lunarCanvas {
   gap: 7px;
 }
 .metric-box {
-  background: #0a101d;
+  background: #0c0817;
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px;
@@ -597,7 +597,7 @@ canvas#lunarCanvas {
   gap: 5px;
 }
 .site-btn {
-  background: #0a101d;
+  background: #0c0817;
   border: 1px solid var(--border);
   border-radius: 7px;
   padding: 7px 9px;
@@ -609,19 +609,19 @@ canvas#lunarCanvas {
   align-items: center;
   transition: all 0.15s;
 }
-.site-btn:hover { border-color: var(--cyan); background: #1a1728; }
-.site-btn.active-site { border-color: var(--cyan); background: rgba(161, 175, 104, 0.12); }
+.site-btn:hover { border-color: var(--yellow-secondary); background: #1b1231; }
+.site-btn.active-site { border-color: var(--yellow-secondary); background: rgba(250, 204, 21, 0.12); }
 .site-name { font-size: 11px; font-weight: 600; }
 .site-coords { font-family: var(--font-mono); font-size: 9.8px; color: var(--text-muted); }
 
 .gnc-log {
-  background: #060a12;
+  background: #07050f;
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px;
   font-family: var(--font-mono);
   font-size: 10px;
-  color: #e5e8bc;
+  color: #fde047;
   line-height: 1.45;
   max-height: 125px;
   overflow-y: auto;
@@ -630,7 +630,7 @@ canvas#lunarCanvas {
 /* Bottom Flow Diagram & Architecture Section */
 .flow-section {
   padding: 32px 28px 44px;
-  background: radial-gradient(circle at top, #141126 0%, #05080f 80%);
+  background: radial-gradient(circle at top, #140d24 0%, #07050f 80%);
   border-top: 1px solid var(--border);
 }
 .flow-container {
@@ -654,7 +654,7 @@ canvas#lunarCanvas {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 800;
-  color: var(--cyan);
+  color: var(--yellow-secondary);
   margin-bottom: 6px;
 }
 .flow-card h3 { font-size: 14px; margin-bottom: 8px; color: #fff; }
@@ -666,18 +666,18 @@ canvas#lunarCanvas {
   font-size: 10px;
   padding: 3px 7px;
   border-radius: 4px;
-  background: rgba(118, 104, 175, 0.2);
-  color: #d8d0f0;
+  background: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #070b14; }
-::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+::-webkit-scrollbar-track { background: #07050f; }
+::-webkit-scrollbar-thumb { background: #24193b; border-radius: 3px; }
 
 /* Footer */
 .app-footer {
-  background: #03060c;
+  background: #030207;
   border-top: 1px solid var(--border-bright);
   padding: 26px 28px 16px;
   color: var(--text-muted);
@@ -692,7 +692,7 @@ canvas#lunarCanvas {
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #111a2e;
+  border-bottom: 1px solid #140d24;
   align-items: center;
 }
 .footer-col {
@@ -702,7 +702,7 @@ canvas#lunarCanvas {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
-  color: var(--cyan);
+  color: var(--yellow-secondary);
   display: block;
   margin-bottom: 6px;
   text-transform: uppercase;
