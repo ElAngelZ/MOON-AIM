@@ -43,7 +43,8 @@ let state = {
   sunAzimuthDeg: 142.0,
   sunSubLatDeg: 1.1,
   earthLibLatDeg: 4.2,
-  earthLibLonDeg: -2.1
+  earthLibLonDeg: -2.1,
+  ephemSource: "local" // "local" | "loading" | "jpl"
 };
 
 const I18N = {
@@ -105,7 +106,7 @@ const I18N = {
     fStep3Num: "FASE 03 • SCORING",
     fStep3Title: "Cálculo Índice LSI",
     fStep3Desc: "Evaluación multicriterio celda por celda combinando pendiente, rocas, energía solar y enlace con la Tierra para generar la capa térmica.",
-    fStep4Num: "FASE 04 • GNC",
+    fStep4Num: "FASE 04 • GNC (GUIA, NAVEGACION Y CONTROL)",
     fStep4Title: "Búsqueda Multi-Sitio & Desvío",
     fStep4Desc: "Detección estocástica de múltiples zonas óptimas y trazado automático de trayectoria alterna dentro del radio Δv si el objetivo presenta riesgo.",
     fStep5Num: "FASE 05 • ACTUACIÓN",
@@ -170,7 +171,7 @@ const I18N = {
     fStep3Num: "PHASE 03 • SCORING",
     fStep3Title: "LSI Index Computation",
     fStep3Desc: "Cell-by-cell multi-criteria evaluation combining slope, boulders, solar power, and Earth comm link to build the thermal safety layer.",
-    fStep4Num: "PHASE 04 • GNC",
+    fStep4Num: "PHASE 04 • GNC (GUIDANCE, NAVIGATION, AND CONTROL)",
     fStep4Title: "Multi-Site Search & Divert",
     fStep4Desc: "Stochastic detection of multiple optimal zones and automatic alternate trajectory plotting within the Δv radius if target is hazardous.",
     fStep5Num: "PHASE 05 • ACTUATION",
@@ -199,8 +200,7 @@ const thermalCtx = thermalCanvas.getContext("2d");
 moonImg.onload = () => {
   moonLoaded = true;
   extractTerrainFromImage();
-  computeEphemerisFromInputs();
-  rebuildThermalLayer();
+  onDateTimeChange(); // <-- Dispara cálculo local + fetch a JPL Horizons
   selectSite(ARTEMIS_SITES[0], false);
   render();
 };
@@ -290,6 +290,82 @@ function computeEphemerisFromInputs() {
   updateEphemerisUI();
 }
 
+let jplRequestCounter = 0;
+
+const jplCache = {};
+
+async function fetchWithProxyFallback(targetUrl) {
+  if (jplCache[targetUrl]) return jplCache[targetUrl];
+
+  // Extraer los parámetros de la URL de la NASA para pasarlos a nuestro server.py local
+  const queryString = targetUrl.split("?")[1];
+  const localUrl = `/jpl?${queryString}`;
+
+  try {
+    const r = await fetch(localUrl);
+    if (r.ok) {
+      const parsed = await r.json();
+      if (parsed && parsed.result) {
+        jplCache[targetUrl] = parsed;
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn("Aviso servidor local:", err.message);
+  }
+
+  throw new Error("JPL Horizons no disponible temporalmente");
+}
+
+async function fetchJPLHorizonsEphemeris(dStr, tStr) {
+  const start = `${dStr} ${tStr}`;
+  const dtObj = new Date(`${dStr}T${tStr}:00Z`);
+  const ms = isNaN(dtObj.getTime()) ? Date.UTC(2026, 10, 15, 16, 30) : dtObj.getTime();
+  const dtEnd = new Date(ms + 60000);
+  const stop = dtEnd.toISOString().slice(0, 16).replace("T", " ");
+
+  const buildNasaUrl = (targetId) => {
+    const params = new URLSearchParams({
+      format: "json",
+      COMMAND: `'${targetId}'`,
+      OBJ_DATA: "'NO'",
+      MAKE_EPHEM: "'YES'",
+      EPHEM_TYPE: "'OBSERVER'",
+      CENTER: "'coord@301'",        // 301 = Luna
+      COORD_TYPE: "'GEODETIC'",
+      SITE_COORD: "'0,-89.5,0'",    // Polo Sur Lunar (Lon 0°, Lat 89.5°S)
+      START_TIME: `'${start}'`,
+      STOP_TIME: `'${stop}'`,
+      STEP_SIZE: "'1 m'",
+      QUANTITIES: "'4'"             // 4 = Azimut y Elevación aparentes
+    });
+    return `https://ssd.jpl.nasa.gov/api/horizons.api?${params.toString()}`;
+  };
+
+  const parseAzEl = (resultText) => {
+    const match = resultText.match(/\$\$SOE([\s\S]*?)\$\$EOE/);
+    if (!match) return null;
+    const line = match[1].trim().split("\n")[0].trim();
+    const nums = line.match(/[-+]?\d+\.\d+/g);
+    if (!nums || nums.length < 2) return null;
+    return {
+      az: parseFloat(nums[nums.length - 2]),
+      el: parseFloat(nums[nums.length - 1])
+    };
+  };
+
+  const [sunRes, earthRes] = await Promise.all([
+    fetchWithProxyFallback(buildNasaUrl("10")),   // 10 = Sol
+    fetchWithProxyFallback(buildNasaUrl("399"))   // 399 = Tierra
+  ]);
+
+  const sun = parseAzEl(sunRes.result || "");
+  const earth = parseAzEl(earthRes.result || "");
+  if (!sun || !earth) throw new Error("Formato inesperado en respuesta de JPL Horizons");
+
+  return { sun, earth };
+}
+
 function updateEphemerisUI() {
   const isEs = state.lang === "es";
   const azStr = `${state.sunAzimuthDeg >= 0 ? "+" : ""}${state.sunAzimuthDeg.toFixed(0)}°`;
@@ -300,26 +376,86 @@ function updateEphemerisUI() {
   document.getElementById("ephemSunLat").textContent = isEs ? `Sol φ: ${latStr}` : `Sun φ: ${latStr}`;
   document.getElementById("ephemEarthLib").textContent = isEs ? `Lib. Tierra: ${libStr}` : `Earth Lib: ${libStr}`;
 
+  // Actualizar el badge visual de estado (JPL Horizons vs Modelo Local)
+  const badgeEl = document.getElementById("ephemSourceBadge");
+  if (badgeEl) {
+    if (state.ephemSource === "jpl") {
+      badgeEl.textContent = "JPL HORIZONS LIVE";
+      badgeEl.style.background = "rgba(16, 185, 129, 0.18)";
+      badgeEl.style.color = "#10b981";
+      badgeEl.style.border = "1px solid rgba(16, 185, 129, 0.45)";
+    } else if (state.ephemSource === "loading") {
+      badgeEl.textContent = isEs ? "SINCRONIZANDO JPL..." : "SYNCING JPL...";
+      badgeEl.style.background = "rgba(56, 189, 248, 0.16)";
+      badgeEl.style.color = "#38bdf8";
+      badgeEl.style.border = "1px solid rgba(56, 189, 248, 0.4)";
+    } else {
+      badgeEl.textContent = isEs ? "MODELO ANALÍTICO" : "ANALYTIC MODEL";
+      badgeEl.style.background = "rgba(245, 158, 11, 0.16)";
+      badgeEl.style.color = "#f59e0b";
+      badgeEl.style.border = "1px solid rgba(245, 158, 11, 0.4)";
+    }
+  }
+
   const seasonGood = state.sunSubLatDeg < 0;
   const earthGood = state.earthLibLatDeg > 0;
   const impactEl = document.getElementById("missionTimeImpact");
 
+  const sourceNoteEs = state.ephemSource === "jpl"
+    ? `<span style="color:#10b981; font-weight:600;">[✓ Telemetría real NASA JPL Horizons API]</span>`
+    : `<span style="color:#94a3b8;">[Modelo orbital analítico local J2026.0]</span>`;
+
+  const sourceNoteEn = state.ephemSource === "jpl"
+    ? `<span style="color:#10b981; font-weight:600;">[✓ Live NASA JPL Horizons API telemetry]</span>`
+    : `<span style="color:#94a3b8;">[Local analytic orbital model J2026.0]</span>`;
+
   if (isEs) {
     impactEl.innerHTML =
       `• <b>Iluminación (${seasonGood ? "Verano Polar Sur" : "Invierno Polar Sur"}):</b> El Sol entra desde el meridiano <b>${azStr}</b>. ${seasonGood ? "La inclinación solar negativa favorece mayor luz continua en las crestas." : "Las sombras de los cráteres se alargan, reduciendo la energía solar."}<br>` +
-      `• <b>Enlace Tierra (Libración ${libStr}):</b> ${earthGood ? "La Tierra se eleva sobre el horizonte polar (+DTE%), facilitando comunicaciones continuas." : "La Tierra baja hacia el horizonte, aumentando el bloqueo por montañas cercanas."}`;
+      `• <b>Enlace Tierra (Libración ${libStr}):</b> ${earthGood ? "La Tierra se eleva sobre el horizonte polar (+DTE%), facilitando comunicaciones continuas." : "La Tierra baja hacia el horizonte, aumentando el bloqueo por montañas cercanas."}<br>` +
+      `<div style="margin-top:4px; font-size:10px;">${sourceNoteEs}</div>`;
   } else {
     impactEl.innerHTML =
       `• <b>Illumination (${seasonGood ? "South Polar Summer" : "South Polar Winter"}):</b> Sunlight arrives from meridian <b>${azStr}</b>. ${seasonGood ? "Negative sub-solar latitude boosts continuous sunlight on ridges." : "Crater shadows lengthen, reducing available solar power."}<br>` +
-      `• <b>Earth Link (Libration ${libStr}):</b> ${earthGood ? "Earth rises higher above the polar horizon (+DTE%), improving continuous comms." : "Earth dips lower on the horizon, increasing terrain masking risk."}`;
+      `• <b>Earth Link (Libration ${libStr}):</b> ${earthGood ? "Earth rises higher above the polar horizon (+DTE%), improving continuous comms." : "Earth dips lower on the horizon, increasing terrain masking risk."}<br>` +
+      `<div style="margin-top:4px; font-size:10px;">${sourceNoteEn}</div>`;
   }
 }
 
-function onDateTimeChange() {
+async function onDateTimeChange() {
+  const reqId = ++jplRequestCounter;
+
+  // 1. Respuesta inmediata con el modelo analítico local mientras carga JPL
+  state.ephemSource = "loading";
   computeEphemerisFromInputs();
   rebuildThermalLayer();
   updateTelemetry();
   render();
+
+  const dStr = document.getElementById("missionDate").value || "2026-11-15";
+  const tStr = document.getElementById("missionTime").value || "16:30";
+
+  // 2. Consulta asíncrona a NASA JPL Horizons
+  try {
+    const jpl = await fetchJPLHorizonsEphemeris(dStr, tStr);
+    if (reqId !== jplRequestCounter) return; // Ignorar si el usuario ya cambió a otra fecha
+
+    state.sunAzimuthDeg = jpl.sun.az > 180 ? jpl.sun.az - 360 : jpl.sun.az;
+    state.sunSubLatDeg = -jpl.sun.el;
+    state.earthLibLatDeg = jpl.earth.el;
+    state.earthLibLonDeg = jpl.earth.az > 180 ? jpl.earth.az - 360 : jpl.earth.az;
+    state.ephemSource = "jpl";
+
+    updateEphemerisUI();
+    rebuildThermalLayer();
+    updateTelemetry();
+    render();
+  } catch (err) {
+    if (reqId !== jplRequestCounter) return;
+    state.ephemSource = "local";
+    updateEphemerisUI();
+    console.warn("[JPL Horizons Fallback]:", err.message);
+  }
 }
 
 function stepMissionDays(deltaDays) {
@@ -976,51 +1112,63 @@ function resetDefaultParams() {
 
 // Multi-Zone Stochastic Optimal Search: Finds all optimal candidates and picks a random spatial subset of 5 zones
 function findOptimalSites() {
+  if (!imgBrightnessGrid && moonLoaded) {
+    extractTerrainFromImage();
+  }
+
   const candidates = [];
-  for (let lat = -89.6; lat <= -71.5; lat += 0.55) {
-    for (let lon = -180; lon < 180; lon += 5) {
-      const pos = latLonToNorm(lat, lon);
-      const ev = evaluatePoint(pos.nx, pos.ny);
-      if (ev) {
-        candidates.push({ lat, lon, nx: pos.nx, ny: pos.ny, lsi: ev.lsi });
+  // Escaneo directo en (nx, ny) para detectar TODOS los picos de 85-95 del mapa
+  const step = 0.012;
+  for (let ny = -0.98; ny <= 0.98; ny += step) {
+    for (let nx = -0.98; nx <= 0.98; nx += step) {
+      if (nx * nx + ny * ny > 0.98) continue;
+      const ev = evaluatePoint(nx, ny);
+      if (ev && ev.lsi > 0) {
+        candidates.push({ lat: ev.lat, lon: ev.lon, nx, ny, lsi: ev.lsi });
       }
     }
   }
 
-  // Sort descending by LSI score
   candidates.sort((a, b) => b.lsi - a.lsi);
 
-  // Filter pool of optimal zones (LSI >= 75, or top 45 candidates if constraints are super tight)
-  let pool = candidates.filter(c => c.lsi >= 75);
-  if (pool.length < 12) {
-    pool = candidates.slice(0, Math.min(45, candidates.length));
+  // Debug real en consola (F12 -> Console)
+  console.log("Imagen cargada:", moonLoaded, "| Grid listo:", !!imgBrightnessGrid);
+  console.log("Top 10 LSI reales en el mapa:", candidates.slice(0, 10).map(c => c.lsi));
+
+  // 1. Niveles estrictos: >= 85 y 80-89 (sin cortar tier2 a 3, para tener de dónde elegir separados)
+  const tier1 = candidates.filter(c => c.lsi >= 85);
+  const tier2 = candidates.filter(c => c.lsi >= 75 && c.lsi < 85);
+
+  const shuffle = (arr) => {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  };
+
+  let prioritizedPool = [
+    ...shuffle([...tier1]),
+    ...shuffle([...tier2])
+  ];
+
+  // Emergencia: solo si realmente hay menos de 3 puntos >= 80 en TODO el mapa
+  if (prioritizedPool.length < 3) {
+    console.warn("Emergencia: menos de 3 sitios >= 80 encontrados");
+    prioritizedPool = candidates.slice(0, 5);
   }
 
-  // Shuffle pool using Fisher-Yates to get a fresh random sample each click
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const tmp = pool[i];
-    pool[i] = pool[j];
-    pool[j] = tmp;
-  }
-
-  // Pick up to 5 well-separated optimal zones from the randomized pool
+  // 2. Elegir hasta 5 zonas separadas (sin ningún fallback posterior que meta puntajes bajos)
   const chosen = [];
   const minDistNorm = 0.14;
-  for (const cand of pool) {
+  for (const cand of prioritizedPool) {
     if (chosen.length >= 5) break;
     const tooClose = chosen.some(c => Math.hypot(c.nx - cand.nx, c.ny - cand.ny) < minDistNorm);
     if (!tooClose) {
       chosen.push(cand);
     }
   }
-  // Fallback if spatial separation was too strict
-  for (const cand of pool) {
-    if (chosen.length >= 5) break;
-    if (!chosen.includes(cand)) chosen.push(cand);
-  }
 
-  // Sort the 5 chosen zones by LSI descending
   chosen.sort((a, b) => b.lsi - a.lsi);
   state.optimalZones = chosen;
   state.activeOptIndex = 0;
@@ -1029,7 +1177,6 @@ function findOptimalSites() {
 
   if (chosen.length > 0) {
     selectOptimalZone(0, false);
-    // Keep view zoomed out enough to see all 5 optimal zones on the polar map
     state.zoom = 1.25;
     state.panX = 0;
     state.panY = 0;

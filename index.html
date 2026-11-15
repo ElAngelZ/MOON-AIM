@@ -150,7 +150,7 @@
       <!-- Multi-Optimal Random Zones Selector -->
       <div class="opt-zones-box" id="optZonesBox">
         <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);" id="tOptZonesHeader">
-          Muestra aleatoria de zonas óptimas detectadas (clic para inspeccionar):
+          Muestra de 5 zonas óptimas detectadas (clic para inspeccionar):
         </div>
         <div class="opt-chips" id="optChipsContainer"></div>
       </div>
@@ -163,7 +163,7 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           <span id="tDateTitle">Fecha y Hora de Alunizaje</span>
         </span>
-        <span class="widget-badge">UTC</span>
+        <span class="widget-badge" id="ephemSourceBadge">MODELO LOCAL UTC</span>
       </div>
 
       <div class="input-grid-2">
@@ -236,6 +236,7 @@
     <!-- 1. Landing Safety Index Card with Plain Language Explanation -->
     <div class="lsi-card">
       <div style="font-size:10.5px; font-weight:700; letter-spacing:0.08em; color:var(--text-muted);">LANDING SAFETY INDEX (LSI)</div>
+      <div style="font-size:10.5px; font-weight:700; letter-spacing:0.08em; color:var(--text-muted);">INDICE DE SEGURIDAD EN EL ATERRIZAJE</div>
       <div class="lsi-score" id="lsiScore" style="color:var(--green);">88</div>
       <div class="lsi-verdict" id="lsiVerdict" style="background:rgba(16,185,129,0.18); color:var(--green); border:1px solid rgba(16,185,129,0.4);">ZONA VIABLE PARA DESCENSO</div>
       <div style="font-size:11px; color:var(--text-muted); margin-top:6px; font-weight:600;" id="selectedSiteTitle">Shackleton Rim (Cresta Iluminada)</div>
@@ -345,7 +346,7 @@
         <span class="flow-tag">LSI ∈ [0, 100]</span>
       </div>
       <div class="flow-card">
-        <div class="step-num" id="fStep4Num">FASE 04 • GNC</div>
+        <div class="step-num" id="fStep4Num">FASE 04 • GNC (GUIA, NAVEGACION Y CONTROL)</div>
         <h3 id="fStep4Title">Búsqueda Multi-Sitio & Desvío</h3>
         <p id="fStep4Desc">Detección estocástica de múltiples zonas óptimas y trazado automático de trayectoria alterna dentro del radio Δv si el objetivo presenta riesgo.</p>
         <span class="flow-tag">LiDAR + IMU + Radar</span>
@@ -359,7 +360,31 @@
     </div>
   </div>
 </section>
-
 <script src="app.js"> </script>
 </body>
+
+<footer class="app-footer">
+  <div class="footer-content">
+    <div class="footer-col">
+      <span class="footer-title">MOON AIM — NASA Space Apps 2026</span>
+      <p class="footer-desc">Navegador de aterrizaje para el Polo Sur Lunar</p>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Equipo de Desarrollo</span>
+      <span class="footer-title">ABMODEL</span>
+      <p class="footer-desc">Ángel Zabdiel Guzmán Cárdenas</p>
+      <p class="footer-desc">German Eliuth Fuentes Bravos</p>
+      <p class="footer-desc">Jasinto Alejandro Olivera Flores</p>
+      <p class="footer-desc">Jared Emmanuel Mena Zaragoza</p>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Atribución NASA & Datos</span>
+      <p class="footer-desc">Desarrollado para el NASA Space Apps Challenge Guadalajara</p>
+      <p class="footer-desc">Cartografía base Clementine y efemérides de NASA JPL Horizons</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 MOON AIM Team - ABMODEL. Todos los derechos reservados bajo licencia abierta para exploración espacial.</p>
+  </div>
+</footer>
 </html>
