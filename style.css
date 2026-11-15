@@ -1,0 +1,676 @@
+:root {
+    --bg-deep: #05080f;
+    --bg-panel: #0b111e;
+    --bg-card: #10192b;
+    --bg-card-hover: #16223a;
+    --border: #1e2d4a;
+    --border-bright: #2e4675;
+    --text-main: #e6eefc;
+    --text-muted: #8ea3c7;
+    --text-dim: #5d7399;
+    --nasa-blue: #1c64f2;
+    --cyan: #38bdf8;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-deep);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header Bar */
+  header {
+    height: 54px;
+    background: linear-gradient(90deg, #070c17 0%, #0d1628 50%, #070c17 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nasa-badge {
+    background: var(--nasa-blue);
+    color: #fff;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 4px 8px;
+    border-radius: 4px;
+    box-shadow: 0 0 12px rgba(28, 100, 242, 0.45);
+  }
+  .brand h1 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #f8fafc;
+  }
+  .brand span.sub {
+    font-size: 16px;
+    color: var(--cyan);
+    font-family: var(--font-mono);
+    margin-left: 8px;
+    opacity: 0.9;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 23px;
+    color: var(--text-muted);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 5px 10px;
+    border-radius: 6px;
+  }
+
+  /* Language Toggle Switch in Top Right */
+  .lang-switch-btn {
+    display: flex;
+    align-items: center;
+    background: #060a12;
+    border: 1px solid var(--border-bright);
+    border-radius: 7px;
+    padding: 3px;
+    cursor: pointer;
+    user-select: none;
+    gap: 2px;
+  }
+  .lang-opt {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 5px;
+    color: var(--text-muted);
+    transition: all 0.18s ease;
+  }
+  .lang-opt.active {
+    background: var(--nasa-blue);
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(28, 100, 242, 0.45);
+  }
+
+  /* Main Interactive Console Workspace */
+  .workspace {
+    height: calc(100vh - 54px);
+    min-height: 700px;
+    display: grid;
+    grid-template-columns: 335px 1fr 350px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-bright);
+  }
+
+  .sidebar {
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    padding: 12px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sidebar.right {
+    border-right: none;
+    border-left: 1px solid var(--border);
+  }
+
+  /* Tangible Widget Box */
+  .widget-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-bright);
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    flex-shrink: 0;
+  }
+  .widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 9px;
+  }
+  .widget-title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .widget-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(56, 189, 248, 0.14);
+    color: var(--cyan);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+  }
+
+  .layer-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: #0a101d;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 7px;
+    transition: border-color 0.2s;
+  }
+  .layer-item.active-layer {
+    border-color: rgba(56, 189, 248, 0.45);
+  }
+  .layer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .layer-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #f1f5f9;
+  }
+  .layer-lock-note {
+    font-size: 10px;
+    color: var(--amber);
+    font-family: var(--font-mono);
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* Hardware Toggle Switch */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider-toggle {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    transition: .25s;
+    border-radius: 22px;
+  }
+  .slider-toggle:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: #94a3b8;
+    transition: .25s;
+    border-radius: 50%;
+  }
+  input:checked + .slider-toggle {
+    background-color: var(--nasa-blue);
+    border-color: var(--cyan);
+  }
+  input:checked + .slider-toggle:before {
+    transform: translateX(20px);
+    background-color: #ffffff;
+  }
+
+  .pure-map-btn {
+    width: 100%;
+    padding: 8px 11px;
+    border-radius: 8px;
+    border: 1px solid var(--cyan);
+    background: linear-gradient(135deg, rgba(28, 100, 242, 0.28), rgba(56, 189, 248, 0.16));
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: all 0.18s ease;
+  }
+  .pure-map-btn:hover {
+    background: linear-gradient(135deg, rgba(28, 100, 242, 0.45), rgba(56, 189, 248, 0.28));
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
+  }
+  .pure-map-btn.pure-active {
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    border-color: #2dd4bf;
+  }
+
+  /* Sliders */
+  .param-group {
+    margin-bottom: 10px;
+  }
+  .param-group:last-child { margin-bottom: 0; }
+  .param-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .param-label {
+    font-size: 11.5px;
+    color: #cbd5e1;
+    font-weight: 500;
+  }
+  .param-val {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--cyan);
+    background: rgba(56, 189, 248, 0.1);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 5px;
+    background: #1e293b;
+    border-radius: 4px;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--cyan);
+    border: 2px solid #0f172a;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+  }
+  .param-hint {
+    font-size: 9.8px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .btn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .action-btn {
+    padding: 8px 10px;
+    border-radius: 7px;
+    border: 1px solid var(--border-bright);
+    background: #131f36;
+    color: var(--text-main);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .action-btn:hover { background: #1b2c4d; border-color: var(--cyan); }
+  .action-btn.primary {
+    background: var(--nasa-blue);
+    border-color: #3b82f6;
+    color: #fff;
+  }
+  .action-btn.primary:hover { background: #2563eb; }
+
+  /* Optimal Zones Chips List */
+  .opt-zones-box {
+    margin-top: 9px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    display: none;
+  }
+  .opt-zones-box.visible { display: block; }
+  .opt-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+  }
+  .opt-chip {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 4px 7px;
+    border-radius: 5px;
+    background: rgba(16, 185, 129, 0.14);
+    border: 1px solid rgba(16, 185, 129, 0.45);
+    color: #6ee7b7;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .opt-chip:hover, .opt-chip.active {
+    background: var(--green);
+    color: #05080f;
+    font-weight: 700;
+  }
+
+  /* Manual Coordinates & Date-Time Inputs */
+  .input-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .field-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+  .num-input, .dt-input {
+    width: 100%;
+    background: #080d18;
+    border: 1px solid var(--border-bright);
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    outline: none;
+  }
+  .num-input:focus, .dt-input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.25);
+  }
+  .ephem-summary {
+    margin-top: 8px;
+    padding: 8px 9px;
+    background: #080d18;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-size: 10.8px;
+    color: #cbd5e1;
+    line-height: 1.42;
+  }
+  .ephem-metrics {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--cyan);
+    margin-bottom: 5px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #162238;
+  }
+  .step-btns {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+    margin-top: 6px;
+  }
+  .mini-btn {
+    background: #0d1628;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 4px 0;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .mini-btn:hover { border-color: var(--cyan); color: #fff; }
+
+  /* Center Map Viewport */
+  .map-viewport {
+    position: relative;
+    background: #000000;
+    overflow: hidden;
+    cursor: grab;
+    user-select: none;
+  }
+  .map-viewport:active { cursor: grabbing; }
+  canvas#lunarCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Floating Zoom & HUD Controls on Map */
+  .map-hud-top {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .hud-chip {
+    pointer-events: auto;
+    background: rgba(8, 13, 24, 0.86);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .zoom-controls {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(8, 13, 24, 0.9);
+    border: 1px solid var(--border-bright);
+    border-radius: 9px;
+    padding: 6px;
+  }
+  .zoom-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .zoom-btn:hover { background: var(--nasa-blue); border-color: var(--cyan); }
+  .zoom-level-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-align: center;
+    color: var(--cyan);
+    padding: 2px 0;
+  }
+
+  .legend-bar {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background: rgba(8, 13, 24, 0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 11px;
+    transition: opacity 0.25s;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .swatch { width: 11px; height: 11px; border-radius: 3px; }
+
+  /* Right Telemetry Panel */
+  .lsi-card {
+    background: linear-gradient(145deg, #0f192d, #09101e);
+    border: 1px solid var(--border-bright);
+    border-radius: 10px;
+    padding: 13px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .lsi-score {
+    font-family: var(--font-mono);
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.05;
+    margin: 4px 0;
+  }
+  .lsi-verdict {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.05em;
+  }
+  .lsi-plain-desc {
+    margin-top: 9px;
+    padding: 8px 10px;
+    background: rgba(6, 10, 18, 0.78);
+    border-left: 3px solid var(--green);
+    border-radius: 6px;
+    font-size: 11px;
+    color: #dbeafe;
+    text-align: left;
+    line-height: 1.45;
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+  .metric-box {
+    background: #0a101d;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+  }
+  .metric-k { font-size: 10px; color: var(--text-muted); }
+  .metric-v { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; margin-top: 2px; }
+
+  .site-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .site-btn {
+    background: #0a101d;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 7px 9px;
+    color: var(--text-main);
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.15s;
+  }
+  .site-btn:hover { border-color: var(--cyan); background: #111c33; }
+  .site-btn.active-site { border-color: var(--cyan); background: rgba(56, 189, 248, 0.12); }
+  .site-name { font-size: 11px; font-weight: 600; }
+  .site-coords { font-family: var(--font-mono); font-size: 9.8px; color: var(--text-muted); }
+
+  .gnc-log {
+    background: #060a12;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: #93c5fd;
+    line-height: 1.45;
+    max-height: 125px;
+    overflow-y: auto;
+  }
+
+  /* Bottom Flow Diagram & Architecture Section */
+  .flow-section {
+    padding: 32px 28px 44px;
+    background: radial-gradient(circle at top, #0d172a 0%, #05080f 80%);
+    border-top: 1px solid var(--border);
+  }
+  .flow-container {
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+  .flow-steps {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .flow-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-bright);
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+  }
+  .step-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--cyan);
+    margin-bottom: 6px;
+  }
+  .flow-card h3 { font-size: 14px; margin-bottom: 8px; color: #fff; }
+  .flow-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .flow-tag {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 7px;
+    border-radius: 4px;
+    background: rgba(28, 100, 242, 0.2);
+    color: #93c5fd;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #070b14; }
+  ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }

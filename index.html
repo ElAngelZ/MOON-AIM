@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset = "UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOON AIM — NASA Space Apps 2026</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <span class="nasa-badge">NASA SPACE APPS 2026</span>
+    <h1>MOON AIM <span class="sub" id="hdrSub">NAVEGADOR DE ATERRIZAJE LUNAR</span></h1>
+  </div>
+  <div class="header-right">
+    <div class="status-pill">
+      <span>ABMODEL</span>
+    </div>
+    <button class="lang-switch-btn" onclick="toggleLanguage()" title="Cambiar Idioma / Switch Language">
+      <span class="lang-opt active" id="langEs">ES</span>
+      <span class="lang-opt" id="langEn">EN</span>
+    </button>
+  </div>
+</header>
+
+<!-- INTERACTIVE MAP CONSOLE -->
+<div class="workspace" id="mapWorkspace">
+
+  <!-- LEFT SIDEBAR: LAYER CONTROL + LANDER PARAMETERS + DATE/TIME -->
+  <aside class="sidebar">
+
+    <!-- 1. TANGIBLE LAYER CONTROL WIDGET (EXCLUSIVE GUARD: AT LEAST 1 ACTIVE) -->
+    <div class="widget-box">
+      <div class="widget-header">
+        <span class="widget-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          <span id="tLayerTitle">Control de Capas</span>
+        </span>
+        <span class="widget-badge" id="layerCountBadge">2 / 2 ACTIVAS</span>
+      </div>
+
+      <div class="layer-lock-note" id="layerLockNote">
+        <span>🔒</span>
+        <span id="tLayerLockMsg">Solo puedes desactivar una capa a la vez (mín. 1 activa)</span>
+      </div>
+
+      <!-- Layer 1: Base Clementine Circular Map -->
+      <div class="layer-item active-layer" id="layerBaseCard">
+        <div class="layer-info">
+          <span class="layer-name" id="tLayer1Name">1. Mapa Base del Polo Sur Lunar</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggleBaseLayer" checked onchange="onLayerChange('base')" />
+          <span class="slider-toggle"></span>
+        </label>
+      </div>
+
+      <!-- Layer 2: Thermal Landing Safety Overlay -->
+      <div class="layer-item active-layer" id="layerThermalCard">
+        <div class="layer-info">
+          <span class="layer-name" id="tLayer2Name">2. Capa Térmica de Viabilidad</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggleThermalLayer" checked onchange="onLayerChange('thermal')" />
+          <span class="slider-toggle"></span>
+        </label>
+      </div>
+
+      <!-- Opacity Slider for Thermal Layer -->
+      <div class="param-group" style="margin-top:5px; margin-bottom:9px;">
+        <div class="param-label-row">
+          <span class="param-label" style="font-size:10.5px;" id="tOpacityLbl">Opacidad Capa Térmica</span>
+          <span class="param-val" id="opacityVal">67%</span>
+        </div>
+        <input type="range" id="thermalOpacity" min="25" max="95" value="67" oninput="onOpacityChange(this.value)" />
+      </div>
+
+      <!-- Quick Action Button: Pure Circular Map Mode -->
+      <button class="pure-map-btn" id="pureMapBtn" onclick="togglePureCircularMap()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        <span id="pureMapBtnText">Desactivar Capa Térmica (Mapa Lunar Puro)</span>
+      </button>
+    </div>
+
+    <!-- 2. LANDER PARAMETERS -->
+    <div class="widget-box">
+      <div class="widget-header">
+        <span class="widget-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span id="tParamsTitle">Parámetros del Lander</span>
+        </span>
+        <span class="widget-badge" id="tStdBadge">ESTÁNDAR</span>
+      </div>
+
+      <!-- Slope Limit -->
+      <div class="param-group">
+        <div class="param-label-row">
+          <span class="param-label" id="tSlopeLbl">Pendiente Máx. Estable (θ<sub>max</sub>)</span>
+          <span class="param-val" id="valSlope">12.0°</span>
+        </div>
+        <input type="range" id="paramSlope" min="4" max="22" step="0.5" value="12.0" oninput="updateParams()" />
+        <div class="param-hint" id="tSlopeHint">Límite estático CG / huella de patas (Estándar: 12.0°)</div>
+      </div>
+
+      <!-- Nozzle Clearance -->
+      <div class="param-group">
+        <div class="param-label-row">
+          <span class="param-label" id="tClearLbl">Despeje Libre Tobera (h<sub>clear</sub>)</span>
+          <span class="param-val" id="valClearance">0.55 m</span>
+        </div>
+        <input type="range" id="paramClearance" min="0.20" max="1.20" step="0.05" value="0.55" oninput="updateParams()" />
+        <div class="param-hint" id="tClearHint">Altura máxima de roca tolerable (Estándar: 0.55 m)</div>
+      </div>
+
+      <!-- Solar Illumination -->
+      <div class="param-group">
+        <div class="param-label-row">
+          <span class="param-label" id="tSolarLbl">Iluminación Solar Mínima</span>
+          <span class="param-val" id="valSolar">65%</span>
+        </div>
+        <input type="range" id="paramSolar" min="15" max="95" step="5" value="65" oninput="updateParams()" />
+        <div class="param-hint" id="tSolarHint">Balance fotovoltaico y térmico (Estándar: 65%)</div>
+      </div>
+
+      <!-- Earth Visibility for Communications (%) -->
+      <div class="param-group">
+        <div class="param-label-row">
+          <span class="param-label" id="tEarthLbl">Visibilidad Tierra Mín. (Comms)</span>
+          <span class="param-val" id="valEarth">60%</span>
+        </div>
+        <input type="range" id="paramEarth" min="10" max="95" step="5" value="60" oninput="updateParams()" />
+        <div class="param-hint" id="tEarthHint">Enlace directo DTE hacia Tierra 0°E (Estándar: 60%)</div>
+      </div>
+
+      <!-- Lateral Divert Delta-V -->
+      <div class="param-group">
+        <div class="param-label-row">
+          <span class="param-label" id="tDvLbl">Presupuesto Desvío (Δv)</span>
+          <span class="param-val" id="valDeltaV">45 m/s</span>
+        </div>
+        <input type="range" id="paramDeltaV" min="10" max="100" step="5" value="45" oninput="updateParams()" />
+        <div class="param-hint" id="tDvHint">Radio de evasión terminal GNC (Estándar: 45 m/s)</div>
+      </div>
+
+      <div class="btn-row" style="margin-top: 10px;">
+        <button class="action-btn" id="btnResetParams" onclick="resetDefaultParams()">Restaurar Estándar</button>
+        <button class="action-btn primary" id="btnFindOptimal" onclick="findOptimalSites()">Buscar Zonas Óptimas</button>
+      </div>
+
+      <!-- Multi-Optimal Random Zones Selector -->
+      <div class="opt-zones-box" id="optZonesBox">
+        <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);" id="tOptZonesHeader">
+          Muestra aleatoria de zonas óptimas detectadas (clic para inspeccionar):
+        </div>
+        <div class="opt-chips" id="optChipsContainer"></div>
+      </div>
+    </div>
+
+    <!-- 3. LANDING DATE & TIME (EPHEMERIS & VIABILITY IMPACT) -->
+    <div class="widget-box">
+      <div class="widget-header">
+        <span class="widget-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="tDateTitle">Fecha y Hora de Alunizaje</span>
+        </span>
+        <span class="widget-badge">UTC</span>
+      </div>
+
+      <div class="input-grid-2">
+        <div class="field-group">
+          <label class="field-label" id="tDateLbl">FECHA MISIÓN</label>
+          <input type="date" class="dt-input" id="missionDate" value="2026-11-15" onchange="onDateTimeChange()" />
+        </div>
+        <div class="field-group">
+          <label class="field-label" id="tTimeLbl">HORA (UTC)</label>
+          <input type="time" class="dt-input" id="missionTime" value="16:30" onchange="onDateTimeChange()" />
+        </div>
+      </div>
+
+      <div class="step-btns">
+        <button class="mini-btn" onclick="stepMissionDays(-7)">−7d</button>
+        <button class="mini-btn" onclick="stepMissionDays(-1)">−1d</button>
+        <button class="mini-btn" onclick="stepMissionDays(1)">+1d</button>
+        <button class="mini-btn" onclick="stepMissionDays(7)">+7d</button>
+      </div>
+
+      <div class="ephem-summary">
+        <div class="ephem-metrics">
+          <span id="ephemSunAz">Sol Az: 142°E</span>
+          <span id="ephemSunLat">Sol φ: +1.1°</span>
+          <span id="ephemEarthLib">Lib. Tierra: +4.2°</span>
+        </div>
+        <div id="missionTimeImpact">
+          La fecha y hora definen la dirección de los rayos solares y la libración terrestre, modificando las sombras de los cráteres y la ventana de comunicación directa.
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- CENTER: HIGH-RESOLUTION VECTOR ZOOM VIEWPORT -->
+  <main class="map-viewport" id="viewport">
+    <canvas id="lunarCanvas"></canvas>
+
+    <div class="map-hud-top">
+      <div class="hud-chip">
+        <span id="tCursorLbl">CURSOR:</span>
+        <span id="hudCoords" style="color:var(--cyan); font-weight:700;">89.54°S, 0.00°E</span>
+        <span style="color:var(--text-dim);">|</span>
+        <span id="hudFeature">Borde Cráter Shackleton</span>
+      </div>
+      <div class="hud-chip">
+        <span id="tProjLbl">PROYECCIÓN:</span>
+        <span style="color:#cbd5e1;" id="tProjVal">Ortográfica Polar (r = R·cos φ)</span>
+      </div>
+    </div>
+
+    <div class="legend-bar" id="legendBar">
+      <span style="font-weight:700; color:#cbd5e1;" id="tLegendTitle">ÍNDICE LSI:</span>
+      <div class="legend-item"><span class="swatch" style="background:#10b981;"></span><span id="tLegOpt">Óptimo (≥75)</span></div>
+      <div class="legend-item"><span class="swatch" style="background:#f59e0b;"></span><span id="tLegMarg">Marginal (45–74)</span></div>
+      <div class="legend-item"><span class="swatch" style="background:#ef4444;"></span><span id="tLegHaz">Peligro / PSR (&lt;45)</span></div>
+    </div>
+
+    <div class="zoom-controls">
+      <button class="zoom-btn" onclick="zoomBy(1.35)" title="Zoom +">+</button>
+      <div class="zoom-level-tag" id="zoomTag">1.0x</div>
+      <button class="zoom-btn" onclick="zoomBy(1/1.35)" title="Zoom −">−</button>
+      <button class="zoom-btn" onclick="resetView()" title="Reset" style="font-size:12px;">⌖</button>
+    </div>
+  </main>
+
+  <!-- RIGHT SIDEBAR: LSI + MANUAL COORDS + TELEMETRY + ARTEMIS SITES + GNC LOG -->
+  <aside class="sidebar right">
+
+    <!-- 1. Landing Safety Index Card with Plain Language Explanation -->
+    <div class="lsi-card">
+      <div style="font-size:10.5px; font-weight:700; letter-spacing:0.08em; color:var(--text-muted);">LANDING SAFETY INDEX (LSI)</div>
+      <div class="lsi-score" id="lsiScore" style="color:var(--green);">88</div>
+      <div class="lsi-verdict" id="lsiVerdict" style="background:rgba(16,185,129,0.18); color:var(--green); border:1px solid rgba(16,185,129,0.4);">ZONA VIABLE PARA DESCENSO</div>
+      <div style="font-size:11px; color:var(--text-muted); margin-top:6px; font-weight:600;" id="selectedSiteTitle">Shackleton Rim (Cresta Iluminada)</div>
+      <div class="lsi-plain-desc" id="lsiPlainDesc">
+        Sitio óptimo: la inclinación del suelo y el tamaño de las rocas están dentro de los límites de las patas y la tobera del lander, además de contar con buena luz solar y vista directa a la Tierra.
+      </div>
+    </div>
+
+    <!-- 2. Manual Coordinate Input Widget -->
+    <div class="widget-box">
+      <div class="widget-header">
+        <span class="widget-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
+          <span id="tManualTitle">Ingresar Coordenadas Manualmente</span>
+        </span>
+      </div>
+      <div class="input-grid-2">
+        <div class="field-group">
+          <label class="field-label" id="tLatInputLbl">LATITUD (70°S a 90°S)</label>
+          <input type="number" class="num-input" id="inputLat" step="0.1" min="-90" max="90" value="-89.54" />
+        </div>
+        <div class="field-group">
+          <label class="field-label" id="tLonInputLbl">LONGITUD (-180° a 180°)</label>
+          <input type="number" class="num-input" id="inputLon" step="0.5" min="-180" max="180" value="0.0" />
+        </div>
+      </div>
+      <button class="action-btn primary" style="width:100%;" id="btnGoCoords" onclick="goToManualCoords()">
+        Ir a Coordenadas y Evaluar Sitio
+      </button>
+    </div>
+
+    <!-- 3. Physical Telemetry Grid (Includes Earth Visibility %) -->
+    <div class="widget-box">
+      <div class="widget-header">
+        <span class="widget-title" id="tTelemetryTitle">Telemetría Física del Punto</span>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-box">
+          <div class="metric-k" id="kSlope">Pendiente Local</div>
+          <div class="metric-v" id="mSlope" style="color:var(--green);">6.4°</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-k" id="kRough">Rugosidad / Rocas</div>
+          <div class="metric-v" id="mRough" style="color:var(--green);">0.24 m</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-k" id="kSolar">Iluminación Solar</div>
+          <div class="metric-v" id="mSolar" style="color:var(--cyan);">84%</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-k" id="kEarth">Visibilidad Tierra</div>
+          <div class="metric-v" id="mEarth" style="color:var(--green);">78%</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-k" id="kTemp">Temp. Superficial</div>
+          <div class="metric-v" id="mTemp" style="color:#e2e8f0;">218 K</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-k" id="kSF">FS Volcadura</div>
+          <div class="metric-v" id="mSafetyFactor" style="color:var(--green);">1.88x</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Candidate Regions -->
+    <div class="widget-box">
+      <div class="widget-header">
+        <span class="widget-title" id="tSitesTitle">Sitios Candidatos Polo Sur</span>
+      </div>
+      <div class="site-list" id="siteList"></div>
+    </div>
+
+    <!-- 5. GNC Diagnostic Log -->
+    <div class="widget-box">
+      <div class="widget-header">
+        <span class="widget-title" id="tGncTitle">Diagnóstico GNC & Propulsión</span>
+      </div>
+      <div class="gnc-log" id="gncLog"></div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- BOTTOM SECTION: GNC WORKFLOW ARCHITECTURE -->
+<section class="flow-section" id="flowWorkspace">
+  <div class="flow-container">
+    <h2 style="font-size:19px; color:#fff; margin-bottom:6px;" id="tFlowMainTitle">Arquitectura Electromecánica y Línea de Flujo GNC</h2>
+    <p style="font-size:13px; color:var(--text-muted);" id="tFlowSubTitle">Integración de restricciones físicas del módulo lunar, visibilidad directa a la Tierra (DTE) y efemérides orbitales con procesamiento cartográfico del Polo Sur.</p>
+
+    <div class="flow-steps">
+      <div class="flow-card">
+        <div class="step-num" id="fStep1Num">FASE 01 • INGESTA</div>
+        <h3 id="fStep1Title">Cartografía Polar & Efemérides</h3>
+        <p id="fStep1Desc">Carga del mosaico ortográfico limpio del Polo Sur (70°S–90°S), cálculo del azimut solar según fecha/hora UTC y libración óptica de la Tierra.</p>
+        <span class="flow-tag">Vector Zoom 1x–18x</span>
+      </div>
+      <div class="flow-card">
+        <div class="step-num" id="fStep2Num">FASE 02 • HARDWARE</div>
+        <h3 id="fStep2Title">Límites del Lander</h3>
+        <p id="fStep2Desc">Parametrización física: ángulo crítico de volcadura (θ<sub>max</sub>), despeje de tobera (h<sub>clear</sub>), luz solar mínima, visibilidad Tierra (%) y Δv.</p>
+        <span class="flow-tag">CAD & Comms DTE</span>
+      </div>
+      <div class="flow-card">
+        <div class="step-num" id="fStep3Num">FASE 03 • SCORING</div>
+        <h3 id="fStep3Title">Cálculo Índice LSI</h3>
+        <p id="fStep3Desc">Evaluación multicriterio celda por celda combinando pendiente, rocas, energía solar y enlace con la Tierra para generar la capa térmica.</p>
+        <span class="flow-tag">LSI ∈ [0, 100]</span>
+      </div>
+      <div class="flow-card">
+        <div class="step-num" id="fStep4Num">FASE 04 • GNC</div>
+        <h3 id="fStep4Title">Búsqueda Multi-Sitio & Desvío</h3>
+        <p id="fStep4Desc">Detección estocástica de múltiples zonas óptimas y trazado automático de trayectoria alterna dentro del radio Δv si el objetivo presenta riesgo.</p>
+        <span class="flow-tag">LiDAR + IMU + Radar</span>
+      </div>
+      <div class="flow-card">
+        <div class="step-num" id="fStep5Num">FASE 05 • ACTUACIÓN</div>
+        <h3 id="fStep5Title">Alunizaje y Supervivencia</h3>
+        <p id="fStep5Desc">Verificación del Factor de Seguridad contra volcadura, enlace continuo de telemetría con la Tierra y balance térmico/solar en superficie.</p>
+        <span class="flow-tag">Control Lazo Cerrado</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="app.js"> </script>
+</body>
+</html>
