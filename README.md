@@ -41,7 +41,10 @@ Cada celda del disco polar se evalúa partiendo de una puntuación base de `100`
 | **Visibilidad Tierra Mín. (Comms)** | `60%` | Línea de vista directa hacia la Tierra ($0^\circ\text{E}$) considerando relieve y libración. |
 | **Presupuesto Desvío ($\Delta v$)** | `45 m/s` | Alcance lateral disponible para reorientación terminal del sistema GNC. |
 
+---
+
 ### Clasificación del *Landing Safety Index (LSI)*
+
 * 🟢 **Óptimo ($\text{LSI} \ge 75$):** Terreno plano, libre de obstáculos críticos, con iluminación solar y enlace DTE dentro de especificación.
 * 🟡 **Marginal ($45 \le \text{LSI} < 75$):** Cumple parcialmente o con márgenes estrechos; requiere precaución y monitoreo activo del sistema GNC.
 * 🔴 **Peligro / PSR ($\text{LSI} < 45$):** Riesgo de volcadura, impacto en tobera, oscuridad permanente o pérdida de comunicación; el sistema activa el desvío automático hacia el sitio seguro más cercano.
@@ -59,11 +62,13 @@ Cada celda del disco polar se evalúa partiendo de una puntuación base de `100`
 ---
 
 ## 🔗 Enlaces de Interés
+
 - **Demostración en Vivo (Live Demo):** [https://ElAngelZ.github.io/MOON-AIM/](https://ElAngelZ.github.io/MOON-AIM/)
 
 ---
 
 ## 💻 Instrucciones para Ejecución Local (Opcional y Recomendado)
+
 Si deseas ejecutar la aplicación de forma local con la pasarela de conexión directa a la API de NASA JPL Horizons:
 
 1. Clona el repositorio:
@@ -75,4 +80,3 @@ Si deseas ejecutar la aplicación de forma local con la pasarela de conexión di
     python server.py
 
 3. Abre tu navegador en: http://localhost:8000
----
