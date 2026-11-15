@@ -111,7 +111,13 @@ const I18N = {
     fStep4Desc: "Detección estocástica de múltiples zonas óptimas y trazado automático de trayectoria alterna dentro del radio Δv si el objetivo presenta riesgo.",
     fStep5Num: "FASE 05 • ACTUACIÓN",
     fStep5Title: "Alunizaje y Supervivencia",
-    fStep5Desc: "Verificación del Factor de Seguridad contra volcadura, enlace continuo de telemetría con la Tierra y balance térmico/solar en superficie."
+    fStep5Desc: "Verificación del Factor de Seguridad contra volcadura, enlace continuo de telemetría con la Tierra y balance térmico/solar en superficie.",
+    descColumn1Ft: "Navegador de aterrizaje para el Polo Sur Lunar",
+    titlColumn2Ft: "Equipo de Desarrollo",
+    titlColum3Ft: "Atribución NASA & Datos",
+    descColumn3Ft1: "Desarrollado para el NASA Space Apps Challenge Guadalajara",
+    descColumn3Ft2: "Cartografía base Clementine y efemérides de NASA JPL Horizons",
+    copyright: "© 2026 MOON AIM Team - ABMODEL. Todos los derechos reservados bajo licencia abierta para exploración espacial."
   },
   en: {
     hdrSub: "LUNAR LANDING SITE NAVIGATOR",
@@ -176,7 +182,13 @@ const I18N = {
     fStep4Desc: "Stochastic detection of multiple optimal zones and automatic alternate trajectory plotting within the Δv radius if target is hazardous.",
     fStep5Num: "PHASE 05 • ACTUATION",
     fStep5Title: "Touchdown & Survival",
-    fStep5Desc: "Verification of tipping Safety Factor, continuous Direct-to-Earth telemetry link, and sustained surface thermal/solar balance."
+    fStep5Desc: "Verification of tipping Safety Factor, continuous Direct-to-Earth telemetry link, and sustained surface thermal/solar balance.",
+    descColumn1Ft: "Landing navigator for the lunar South Pole",
+    titlColumn2Ft: "Development Team",
+    titlColum3Ft: "NASA Attribution & Data",
+    descColumn3Ft1: "Developed for the NASA Space Apps Challenge Guadalajara",
+    descColumn3Ft2: "Clementine base cartography and NASA JPL Horizons ephemerides",
+    copyright: "© 2026 MOON AIM Team - ABMODEL. All rights reserved under an open license for space exploration."
   }
 };
 
