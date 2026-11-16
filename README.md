@@ -91,3 +91,9 @@ If you want to run the application locally with the direct connection gateway to
     python server.py
 
 3. Open your browser at: http://localhost:8000
+
+---
+
+##  🤖 Use of Super Intelligence
+
+Super Intelligence was used as an engineering and development assistant to accelerate HTML, CSS and JavaScript interface prototyping, structure the multi-criteria scoring equations of the Landing Safety Index (LSI), and debug ephemeris queries. The deployed navigation engine does not rely on black-box neural networks; it operates through physics-based deterministic models and spatial heuristics to ensure every lunar landing evaluation is transparent and verifiable against the lander's mechanical limits
