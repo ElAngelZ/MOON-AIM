@@ -11,12 +11,17 @@ Unlike a conventional cartographic viewer, this browser conditions terrain viabi
 
 ---
 
+> [!IMPORTANT]
+> Regarding the data used for assigning viable sites and for direct communication with Earth: since the system is hosted on GitHub, this data is generated from image processing and certain accessible data.
+
+>To process data from the JPL Horizons System, we use a Python script as a local server, acting as a bridge for stable and fast access to the data. Instructions for using this script are provided further down in this README.
+
 ## 🚀 Main Features
 
 * **Autonomous Orthographic Polar Cartography:** Clean mosaic of the lunar South Pole (70°S–90°S) from the *Clementine* mission, locally embedded with **continuous vector zoom (1.0x to 18.0x)**, free dragging, and a selenographic grid of parallels and meridians.
 * **Exclusive Layer Control:** Alternation between the **Lunar South Pole Base Map** and the **Viability Thermal Layer** with opacity adjustment and mutual locking to guarantee permanent visibility.
 
-* **- **LSI (Landing Safety Index) Calculation:** Cell-by-cell multi-criteria scoring based on 5 adjustable physical constraints:
+* **LSI (Landing Safety Index) Calculation:** Cell-by-cell multi-criteria scoring based on 5 adjustable physical constraints:
   1. **Maximum Stable Slope ($\theta_{\max}$):** Static limit against rollover based on the center of gravity ($CG$) and foot-pad footprint. ($CG$).
   2. **Nozzle Clearance ($h_{\text{clear}}$):** Maximum tolerable height of rocks/roughness beneath the main engine.
   3. **Minimum Solar Illumination (`%`):** Photovoltaic energy requirement and thermal survival against Permanently Shadowed Regions (PSRs).
@@ -62,11 +67,16 @@ Each cell of the polar disc is evaluated starting from a base score of `100` poi
 
 ---
 
-## 🔗 Links of Interest
+## 🔗 Links of Interest & NASA Data Sources and Resources Used
 
-- **Live Demo:** [https://ElAngelZ.github.io/MOON-AIM/](https://ElAngelZ.github.io/MOON-AIM/)
-
----
+> [!IMPORTANT]
+> - **Live Demo:** [https://ElAngelZ.github.io/MOON-AIM/](https://ElAngelZ.github.io/MOON-AIM/)
+## NASA Data Sources and Resources Used
+The development integrates cartographic, topographic, and orbital ephemeris data from the following official NASA and LPI portals:
+- **Polar Base Cartography:** [Clementine Mission (BMDO / NASA — LPI)](https://www.lpi.usra.edu/lunar/missions/clementine/) and [Lunar South Pole Atlas (LPI / USRA)](https://www.lpi.usra.edu/lunar/lunar-south-pole-atlas/) — Clean orthographic mosaic of the lunar South Pole (70°S–90°S) and selenographic reference atlas for crater georeferencing and surface luminance extraction.
+- **Topographic Validation and Artemis III Sites:** [NASA Moon Trek](https://trek.nasa.gov/moon/) — Selenographic coordinate contrast of Artemis III candidate regions and validation of slopes derived from LRO LOLA.
+- **High-Resolution Analysis and PSR Zones:** [LROC QuickMap (ASU / NASA)](https://quickmap.lroc.asu.edu/) — Inspection of regolith roughness, rock size (nozzle clearance calibration $h_{\text{clear}}$), solar illumination, and Permanently Shadowed Regions (PSRs).
+- **Sun–Earth Orbital Ephemerides:** [NASA JPL Horizons System](https://ssd.jpl.nasa.gov/horizons/) — Calculation of real-time Sun position (azimuth and seasonal declination) and Earth optical libration (UTC) to determine photovoltaic illumination and Direct-to-Earth (DTE) communication links.
 
 ## 💻 Local Execution Instructions (Optional and Recommended)
 
